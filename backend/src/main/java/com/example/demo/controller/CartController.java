@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Cart;
-import com.example.demo.repository.CartRepository;
+import com.example.demo.service.CartService; // 👈 Service-ah import pannunga
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,24 +13,22 @@ import java.util.List;
 public class CartController {
 
     @Autowired
-    private CartRepository cartRepository;
+    private CartService cartService; // 👈 Repository-ku bathula Service-ah use pannunga!
 
     // 1. Get all items for a user
-    @GetMapping("/{email}")
-    public List<Cart> getCart(@PathVariable String email) {
-        return cartRepository.findByUserEmail(email);
-    }
-
-    // 2. Add or Update item in cart
+    @GetMapping("/{email:.+}") // 👈 Intha ':.+' illana kandippa 500 error varum
+public List<Cart> getCart(@PathVariable("email") String email) {
+    return cartService.getCartByEmail(email);
+}
+    // 2. Add or Update item
     @PostMapping("/add")
-    public Cart addToCart(@RequestBody Cart cartItem) {
-        // Real-la quantity update check pannanum, ippo simplify panna direct save panrom
-        return cartRepository.save(cartItem);
-    }
+public Cart addToCart(@RequestBody Cart cartItem) { // 👈 Intha @RequestBody thaan JSON-ah Object-ah mathum
+    return cartService.addToCart(cartItem);
+}
 
-    // 3. Delete all items after checkout
+    // 3. Delete all items - Ippo ithu kandippa work aagum!
     @DeleteMapping("/clear/{email}")
     public void clearCart(@PathVariable String email) {
-        cartRepository.deleteByUserEmail(email);
+        cartService.clearUserCart(email); // 👈 Ippo Service-la irukura @Transactional trigger aagum
     }
 }

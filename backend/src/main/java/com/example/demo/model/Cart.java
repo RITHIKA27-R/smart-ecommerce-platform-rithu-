@@ -2,18 +2,26 @@ package com.example.demo.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 
+@Data
 @Entity
 @Table(name = "cart_items")
-@Data
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String userEmail; // Yarudaiya cart?
-    private Long productId;   // Enna product?
+    @Column(name = "user_email") // 👈 DB-la 'user_email' nu irukkuradhaala ithu must!
+    private String userEmail; 
+
+    @Column(name = "product_id")
+    private Long productId;
+
+    @Column(name = "product_name")
     private String productName;
+
     private double price;
     private int quantity;
 }
